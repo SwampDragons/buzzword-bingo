@@ -19,4 +19,5 @@ def hello():
     return render_template('view.html', buzzwords=words)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.debug = True
+    app.run(threaded=True)
