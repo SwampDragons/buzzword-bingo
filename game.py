@@ -7,6 +7,8 @@ class Board:
         self.username = username
         random.seed()
         self.words = random.sample(buzzwords, 25)
+        self.words[12] = 'saucederps'  # free space! replace with saucederps img
+        self.clicked_words = []
 
     def __str__(self):
         return str(self.words)
@@ -78,6 +80,12 @@ class Game:
         self.words = buzzwords
         self.boards = {}
 
+    def get_board(self, username):
+        if username in self.boards:
+            return self.boards[username]
+        else:
+            return self.generate_board(username)
+
     def generate_board(self, username):
         board = Board(username)
         self.boards[username] = board
@@ -93,4 +101,5 @@ class Game:
             return False
         bingo = board.check_for_win()
         if bingo:
-            board.get_winning_words(bingo)
+            print bingo
+            return board.get_winning_words(bingo)

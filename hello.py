@@ -1,22 +1,28 @@
 from flask import *
-from buzzwords import buzzwords
-import random
-import game
+from game import Game
 
 app = Flask(__name__)
 
-@app.route("/checkbingo", methods=['POST'])
-def checkbingo():
-    # MEGAN fix this shiz
+thisgame = Game()
+
+
+@app.route("/checkbingo/<username>", methods=['POST'])
+def checkbingo(username):
+    print username
     clicked_json = request.form.getlist('list')
     clicked_list = json.loads(clicked_json[0])
+    user_board = thisgame.get_board(username)
+    user_board.clicked_words = clicked_list
+    print user_board.clicked_words
+    winning_words = thisgame.win(username)
+    if winning_words:
+        print "%s won with the following words: %s " % (username, ', '.join(winning_words))
 
-@app.route("/")
-def hello():
-    random.seed()
-    words = random.sample(buzzwords, 25)
-    words[12] = 'saucederps'  # free space! replace with saucederps img
-    return render_template('view.html', buzzwords=words)
+
+@app.route("/<username>")
+def hello(username):
+    user_board = thisgame.get_board(username)
+    return render_template('view.html', buzzwords=user_board.words)
 
 if __name__ == "__main__":
     app.debug = True
