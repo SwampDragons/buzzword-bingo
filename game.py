@@ -13,7 +13,7 @@ class Board:
     def __str__(self):
         return str(self.words)
 
-    def check_for_win(clicked_list):
+    def check_for_win(self):
         """Determine whether clicked_list contains any bingos."""
         # clicked list should be a 25-element list of booleans.  E.g.
         # [True, False, True, True, False ...]
@@ -44,7 +44,7 @@ class Board:
 
         index = 0
         clicked_indices = []
-        for status in clicked_list:
+        for status in self.clicked_words:
             if status is True:
                 clicked_indices.append(index)
             if index is 12:  # saucederps is free!

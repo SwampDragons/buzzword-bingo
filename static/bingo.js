@@ -9,12 +9,17 @@ $(document).ready(function() {
       index++;
     });
     console.log(clicked_list);
+    url = window.location.href.toString();
+    url = url.split("/");
+    name = url[url.length - 1];
+    console.log(url);
     $.ajax({
-      url: "/checkbingo",
+      url: "/checkbingo/"+name,
       data: {list: JSON.stringify(clicked_list)},
       type: 'post',
       success: function(data) {
-        alert(data);
+        // alert(data);
+        document.getElementById("message").innerHTML = data;
       }
     });
   });
