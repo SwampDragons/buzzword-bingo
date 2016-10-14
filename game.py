@@ -88,4 +88,6 @@ class Game:
         if not board:
             # no such session
             return False
-        return board.check_for_win()
+        bingo = board.check_for_win()
+        if bingo:
+            board.get_winning_words(bingo)
