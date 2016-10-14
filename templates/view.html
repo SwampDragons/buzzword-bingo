@@ -1,0 +1,39 @@
+<!doctype html>
+<title>Simple tables</title>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('.cell').on('click', function(e) {
+        $(this).toggleClass('clicked');
+        var click_list = new Array(25);
+        var index = 0;
+        $('.cell').each(function() {
+          click_list[index] = $(this).hasClass('clicked');
+          index++;
+        });
+        console.log(click_list);
+      });
+    });
+  </script>
+</head>
+
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<div class=page align=center>
+  <h1>buzzword bingo!</h1>
+  <br />
+  <table class="dataframe" id="gameboard">
+  {% for i in range(5) %}
+    <tr>
+    {% for j in range(5) %}
+      <td class="cell">
+      {% if buzzwords[i*5+j] == "saucederps" %}
+        <img src="static/saucederps.jpg" width="99px" height="99px" />
+      {% else %}
+        <p>{{buzzwords[i*5+j]}}</p>
+      {% endif %}
+      </td>
+    {% endfor %}
+    </tr>
+  {% endfor %}
+</div>
