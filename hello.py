@@ -8,6 +8,7 @@ app = Flask(__name__)
 def hello():
     random.seed()
     words = random.sample(buzzwords, 25)
+    words[12] = '' # free space! replace with saucederps
     return render_template('view.html',buzzwords=words)
 
 if __name__ == "__main__":
