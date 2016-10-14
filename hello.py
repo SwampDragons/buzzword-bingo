@@ -4,13 +4,9 @@ import random
 
 app = Flask(__name__)
 
+
 @app.route("/checkbingo", methods=['POST'])
 def validate():
-    clicked_json = request.form['javascript_data']
-    print clicked_json
-    # clicked_list = json.loads(clicked_json)[0]
-    # print clicked_list
-    return
     """Determine whether clicked_list contains any bingos."""
     # clicked list should be a 25-element list of booleans.  E.g.
     # [True, False, True, True, False ...]
@@ -22,7 +18,11 @@ def validate():
     # 10 11 12 13 14
     # 15 16 17 18 19
     # 20 21 22 23 24
-
+    clicked_json = request.form['javascript_data']
+    print clicked_json
+    # clicked_list = json.loads(clicked_json)[0]
+    # print clicked_list
+    return
     bingos = [# horizontal bingos
               range(0, 5),
               range(5, 10),
@@ -44,6 +44,8 @@ def validate():
     for status in clicked_list:
         if status is True:
             clicked_indices.append(index)
+        if index is 12:  # saucederps is free!
+            clicked_indices.append(index)
         index += 1
 
     for bingo in bingos:
@@ -56,8 +58,8 @@ def validate():
 def hello():
     random.seed()
     words = random.sample(buzzwords, 25)
-    words[12] = 'saucederps' # free space! replace with saucederps img
-    return render_template('view.html',buzzwords=words)
+    words[12] = 'saucederps'  # free space! replace with saucederps img
+    return render_template('view.html', buzzwords=words)
 
 if __name__ == "__main__":
     app.run(debug=True)
