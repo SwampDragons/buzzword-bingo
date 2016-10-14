@@ -4,8 +4,13 @@ import random
 
 app = Flask(__name__)
 
-
-def validate(clicked_list):
+@app.route("/checkbingo", methods=['POST'])
+def validate():
+    clicked_json = request.form['javascript_data']
+    print clicked_json
+    # clicked_list = json.loads(clicked_json)[0]
+    # print clicked_list
+    return
     """Determine whether clicked_list contains any bingos."""
     # clicked list should be a 25-element list of booleans.  E.g.
     # [True, False, True, True, False ...]
