@@ -18,11 +18,9 @@ def validate():
     # 10 11 12 13 14
     # 15 16 17 18 19
     # 20 21 22 23 24
-    clicked_json = request.form['javascript_data']
-    print clicked_json
-    # clicked_list = json.loads(clicked_json)[0]
-    # print clicked_list
-    return
+    # clicked_json = request.form.getlist("data[]")
+    clicked_json = request.form.getlist('list')
+    clicked_list = json.loads(clicked_json[0])
     bingos = [# horizontal bingos
               range(0, 5),
               range(5, 10),
