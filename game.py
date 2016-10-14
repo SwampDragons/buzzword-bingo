@@ -52,7 +52,7 @@ class Board:
             index += 1
 
         for bingo in bingos:
-            bingoed = all(x in bingo for x in clicked_indices)
+            bingoed = set(bingo).issubset(set(clicked_indices))
             if bingoed:
                 # will use this list to generate the list of winning words
                 return bingo
