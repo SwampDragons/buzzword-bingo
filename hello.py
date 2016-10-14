@@ -4,7 +4,6 @@ import random
 
 app = Flask(__name__)
 
-
 def validate(clicked_list):
     """Determine whether clicked_list contains any bingos."""
     # clicked list should be a 25-element list of booleans.  E.g.
@@ -38,6 +37,8 @@ def validate(clicked_list):
     clicked_indices = []
     for status in clicked_list:
         if status is True:
+            clicked_indices.append(index)
+        if index is 12:  # saucederps is free!
             clicked_indices.append(index)
         index += 1
 
