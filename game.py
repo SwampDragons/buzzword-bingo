@@ -97,7 +97,7 @@ class Board:
 
     def draw(self):
         print "Seed", self.seed
-        print "Words\n", self.cells 
+        print "Words"
         w = self.words
         for i in range(self.dim):
             for j in range(self.dim):
