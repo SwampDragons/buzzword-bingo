@@ -8,10 +8,15 @@ thisgame = Game()
 
 @app.route("/checkbingo/<username>", methods=['POST'])
 def checkbingo(username):
-    # Load list of clicked words
+    print username
     clicked_json = request.form.getlist('list')
     clicked_list = json.loads(clicked_json[0])
-    user_board = Game.get_board(username)
+    user_board = thisgame.get_board(username)
+    user_board.clicked_words = clicked_list
+    print user_board.clicked_words
+    winning_words = thisgame.win(username)
+    if winning_words:
+        print "%s won with the following words: %s " % (username, ', '.join(winning_words))
 
 
 @app.route("/<username>")

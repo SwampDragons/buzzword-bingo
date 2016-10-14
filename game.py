@@ -8,6 +8,7 @@ class Board:
         random.seed()
         self.words = random.sample(buzzwords, 25)
         self.words[12] = 'saucederps'  # free space! replace with saucederps img
+        self.clicked_words = []
 
     def __str__(self):
         return str(self.words)
@@ -100,4 +101,5 @@ class Game:
             return False
         bingo = board.check_for_win()
         if bingo:
-            board.get_winning_words(bingo)
+            print bingo
+            return board.get_winning_words(bingo)
