@@ -1,158 +1,91 @@
 import random
-import buzzwords
+from buzzwords import buzzwords
 
 
 class Board:
-    def __init__(self, seed, dim, words):
-        self.rng = random.Random()
-        self.seed = seed
-        self.rng.seed(seed)
-        self.dim = dim
-        self.cells = []
-        self.cells = [[ self.new_word(words) for i in range(dim)] for j in range(dim)]
-        self.claims = [[ False for i in range(dim)] for j in range(dim)]
+    def __init__(self, username):
+        self.username = username
+        random.seed()
+        self.words = random.sample(buzzwords, 25)
 
-    def session_id(self):
-        return self.seed
+    def check_for_win(clicked_list):
+        """Determine whether clicked_list contains any bingos."""
+        # clicked list should be a 25-element list of booleans.  E.g.
+        # [True, False, True, True, False ...]
 
-    def new_word(self, words):
-        while True:
-            word = self.rng.choice(words)
-            if not self.has_word(word):
-                return word
+        # Bingo board indexing looks like this when mapped to 2D:
 
-    def has_word(self, word):
-        for row in self.cells:
-            for w in row:
-                if w == word:
-                    return True
-        return False
+        # 0  1  2  3  4
+        # 5  6  7  8  9
+        # 10 11 12 13 14
+        # 15 16 17 18 19
+        # 20 21 22 23 24
 
-    def claim(self, word):
-        """ Claims a word for a given session.  Returns True if the word
-            is on the board, False otherwise.
-        """
-        for row in range(self.dim):
-            for col in range(self.dim):
-                if self.cells[row][col] == word:
-                    self.claims[row][col] = True
-                    return True
-        return False
+        bingos = [# horizontal bingos
+                  range(0, 5),
+                  range(5, 10),
+                  range(15, 20),
+                  range(20, 25),
+                  # vertical bingos
+                  range(0, 25, 5),
+                  range(1, 25, 5),
+                  range(2, 25, 5),
+                  range(3, 25, 5),
+                  range(4, 25, 5),
+                  range(5, 30, 5),
+                  # diagonal bingos
+                  range(0, 25, 6),
+                  range(4, 24, 4)]
 
-    def winner(self):
-        """ Returns array of winning words if the board is a winner
-        False otherwise.
-        """
-        # Check rows, then columns, then diagonals.
-        # Rows first:
-        for row in range(self.dim):
-            win = True
-        winwords = []
-        for col in range(self.dim):
-            if not self.claims[row][col]:
-                win = False
-                break
-        winwords.append(self.cells[row][col])
-        if win:
-            return winwords
+        index = 0
+        clicked_indices = []
+        for status in clicked_list:
+            if status is True:
+                clicked_indices.append(index)
+            if index is 12:  # saucederps is free!
+                clicked_indices.append(index)
+            index += 1
 
-        # Columns next
-        for col in range(self.dim):
-            win = True
-        winwords = []
-        for row in range(self.dim):
-            if not self.claims[row][col]:
-                win = False
-                break
-        winwords.append(self.cells[row][col])
-        if win:
-            return winwords
+        for bingo in bingos:
+            bingoed = all(x in bingo for x in clicked_indices)
+            if bingoed:
+                # will use this list to generate the list of winning words
+                return bingo
 
-        # Diagonal \ next
-        win = True
-        winwords = []
-        for x in range (0, self.dim):
-            if not self.claims[x][x]:
-                win = False
-                break
-        winwords.append(self.cells[x][x])
-        if win:
-                return winwords
+        return []
 
-        # Diagonal / next
-        win = True
-        winwords = []
-        for x in range(self.dim):
-            if not self.claims[x][self.dim-x-1]:
-                win = False
-                break
-        winwords.append(self.cells[x][self.dim-x-1])
-        if win:
-                return winwords
+    def get_clicked_words(self, clicked_list):
+        clicked_list.sort()
+        clicked_words = []
+        index = 0
+        for word in self.words:
+            if index in clicked_list:
+                clicked_words.append(word)
+            index += 1
+        return clicked_words
 
-        return False
-
-    def words(self):
-
-        return self.cells
-
-    def draw(self):
-        print "Seed", self.seed
-        print "Words"
-        # w = self.words
-        for i in range(self.dim):
-            for j in range(self.dim):
-                print self.cells[i][j],
-            print
-        if self.winner():
-            print "WINNER"
-            for i in range(self.dim):
-                for j in range(self.dim):
-                    print self.claims[i][j],
-        print
+    def get_winning_words(self, bingo):
+        return self.get_clicked_words(bingo)
 
 
 class Game:
-
-    """ Game object represents a game.  Each session is a session ID.
-    """
+    """ Game object represents a game.  Each session is a session ID."""
 
     def __init__(self):
-        self.rng = random.Random()
-        # maybe we don't need all this?
-        self.seed = self.rng.getrandbits(32)
-        self.rng.seed(self.seed)
         self.words = buzzwords.buzzwords
-        self.dim = 5
         self.boards = {}
 
-    def generate(self):
-
-        session = self.rng.getrandbits(32)
-        board = Board(session, self.dim, self.words)
-        self.boards[session] = board
+    def generate_board(self, username):
+        board = Board(username)
+        self.boards[username] = board
 
         return board
 
-    def claim(self, session, word):
-
-        """ Claims a word for a session.
-        """
-        board = self.boards[session]
-        if not board:
-            # invalid session
-            return False
-        if not board.claim(word):
-            # word not found on board
-            return False
-
-        return True
-
-    def win(self, session):
+    def win(self, username):
         """ Checks if a session is a winner.
         """
-        board = self.boards[session]
+        board = self.boards[username]
         if not board:
             # no such session
             return False
-        return board.winner()
+        return board.check_for_win()
