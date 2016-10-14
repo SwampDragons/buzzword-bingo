@@ -1,6 +1,7 @@
 import random
 import buzzwords
 
+
 class Board:
     def __init__(self, seed, dim, words):
         self.rng = random.Random()
@@ -40,32 +41,32 @@ class Board:
 
     def winner(self):
         """ Returns array of winning words if the board is a winner
-	    False otherwise.
+        False otherwise.
         """
         # Check rows, then columns, then diagonals.
         # Rows first:
         for row in range(self.dim):
             win = True
-	    winwords = []
-            for col in range(self.dim):
-                if not self.claims[row][col]:
-                    win = False
-                    break
-		winwords.append(self.cells[row][col])
-            if win:
-                return winwords
+        winwords = []
+        for col in range(self.dim):
+            if not self.claims[row][col]:
+                win = False
+                break
+        winwords.append(self.cells[row][col])
+        if win:
+            return winwords
 
         # Columns next
         for col in range(self.dim):
             win = True
-	    winwords = []
-            for row in range(self.dim):
-                if not self.claims[row][col]:
-                    win = False
-                    break
-		winwords.append(self.cells[row][col])
-            if win:
-                return winwords
+        winwords = []
+        for row in range(self.dim):
+            if not self.claims[row][col]:
+                win = False
+                break
+        winwords.append(self.cells[row][col])
+        if win:
+            return winwords
 
         # Diagonal \ next
         win = True
@@ -74,7 +75,7 @@ class Board:
             if not self.claims[x][x]:
                 win = False
                 break
-	    winwords.append(self.cells[x][x])
+        winwords.append(self.cells[x][x])
         if win:
                 return winwords
 
@@ -85,7 +86,7 @@ class Board:
             if not self.claims[x][self.dim-x-1]:
                 win = False
                 break
-	    winwords.append(self.cells[x][self.dim-x-1])
+        winwords.append(self.cells[x][self.dim-x-1])
         if win:
                 return winwords
 
@@ -98,18 +99,18 @@ class Board:
     def draw(self):
         print "Seed", self.seed
         print "Words"
-        w = self.words
+        # w = self.words
         for i in range(self.dim):
             for j in range(self.dim):
                 print self.cells[i][j],
             print
         if self.winner():
             print "WINNER"
-            for i in range (self.dim):
+            for i in range(self.dim):
                 for j in range(self.dim):
-		    print self.claims[i][j], 
-		print
-               
+                    print self.claims[i][j],
+        print
+
 
 class Game:
 
@@ -132,7 +133,6 @@ class Game:
         self.boards[session] = board
 
         return board
- 
 
     def claim(self, session, word):
 
@@ -147,7 +147,7 @@ class Game:
             return False
 
         return True
-        
+
     def win(self, session):
         """ Checks if a session is a winner.
         """
@@ -156,4 +156,3 @@ class Game:
             # no such session
             return False
         return board.winner()
-
