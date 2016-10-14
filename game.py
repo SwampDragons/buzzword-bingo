@@ -8,6 +8,9 @@ class Board:
         random.seed()
         self.words = random.sample(buzzwords, 25)
 
+    def __str__(self):
+        return str(self.words)
+
     def check_for_win(clicked_list):
         """Determine whether clicked_list contains any bingos."""
         # clicked list should be a 25-element list of booleans.  E.g.
@@ -72,7 +75,7 @@ class Game:
     """ Game object represents a game.  Each session is a session ID."""
 
     def __init__(self):
-        self.words = buzzwords.buzzwords
+        self.words = buzzwords
         self.boards = {}
 
     def generate_board(self, username):
