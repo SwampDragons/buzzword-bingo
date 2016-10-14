@@ -1,72 +1,115 @@
+import random
+import buzzwords
+
 class Board:
-    def __init__(seed, dim, words):
+    def __init__(self, seed, dim, words):
         self.rng = random.Random()
         self.seed = seed
         self.rng.seed(seed)
         self.dim = dim
-        for row in range (0, dim):
-            for col in range (0, dim):
-                self.words[row][col] = self.rng.choice(words)
-                self.claims[row][col] = false
+        self.cells = []
+        self.cells = [[ self.new_word(words) for i in range(dim)] for j in range(dim)]
+        self.claims = [[ False for i in range(dim)] for j in range(dim)]
 
-    def session_id():
+    def session_id(self):
         return self.seed
 
-    def claim(word):
-        """ Claims a word for a given session.  Returns true if the word
-            is on the board, false otherwise.
-        """
-        for row in range (0, self.dim):
-            for col in range (0, self.dim):
-                if self.words[row][col] == word:
-                    claims[row][col] = true
-                    return true
-        return false
+    def new_word(self, words):
+        while True:
+            word = self.rng.choice(words)
+            if not self.has_word(word):
+                return word
 
-    def winner():
-        """ Returns true if the board is a winner, false otherwise.
+    def has_word(self, word):
+        for row in self.cells:
+            for w in row:
+                if w == word:
+                    return True
+        return False
+
+    def claim(self, word):
+        """ Claims a word for a given session.  Returns True if the word
+            is on the board, False otherwise.
+        """
+        for row in range(self.dim):
+            for col in range(self.dim):
+                if self.cells[row][col] == word:
+                    self.claims[row][col] = True
+                    return True
+        return False
+
+    def winner(self):
+        """ Returns array of winning words if the board is a winner
+	    False otherwise.
         """
         # Check rows, then columns, then diagonals.
         # Rows first:
-        for row in range (0, self.dim):
-            winner = true
-            for col in range (0, self.dim):
+        for row in range(self.dim):
+            win = True
+	    winwords = []
+            for col in range(self.dim):
                 if not self.claims[row][col]:
-                    winner = false
+                    win = False
                     break
-            if winner:
-                return true
+		winwords.append(self.cells[row][col])
+            if win:
+                return winwords
+
         # Columns next
-        for col in range (0, self.dim):
-            winner = false
-            for row in range (0, self.dim):
+        for col in range(self.dim):
+            win = True
+	    winwords = []
+            for row in range(self.dim):
                 if not self.claims[row][col]:
-                    winner = false
+                    win = False
                     break
-            if winner:
-                return true
+		winwords.append(self.cells[row][col])
+            if win:
+                return winwords
+
         # Diagonal \ next
-        winner = true
+        win = True
+        winwords = []
         for x in range (0, self.dim):
             if not self.claims[x][x]:
-                winner = false
+                win = False
                 break
-        if winner:
-                return true
+	    winwords.append(self.cells[x][x])
+        if win:
+                return winwords
 
         # Diagonal / next
-        winner = true
-        for x in range (0, self,dim):
+        win = True
+        winwords = []
+        for x in range(self.dim):
             if not self.claims[x][self.dim-x-1]:
-                winner = false
+                win = False
                 break
-        if winner:
-                return true
+	    winwords.append(self.cells[x][self.dim-x-1])
+        if win:
+                return winwords
 
-        reutrn false
+        return False
 
-    # word list is array in self.words
+    def words(self):
 
+        return self.cells
+
+    def draw(self):
+        print "Seed", self.seed
+        print "Words\n", self.cells 
+        w = self.words
+        for i in range(self.dim):
+            for j in range(self.dim):
+                print self.cells[i][j],
+            print
+        if self.winner():
+            print "WINNER"
+            for i in range (self.dim):
+                for j in range(self.dim):
+		    print self.claims[i][j], 
+		print
+               
 
 class Game:
 
@@ -78,40 +121,39 @@ class Game:
         # maybe we don't need all this?
         self.seed = self.rng.getrandbits(32)
         self.rng.seed(self.seed)
-        self.words = buzzwords
-        self.rows = 5
-        self.cols = 5
+        self.words = buzzwords.buzzwords
+        self.dim = 5
         self.boards = {}
 
-    def generate():
+    def generate(self):
 
         session = self.rng.getrandbits(32)
-        board = Board(session, self.rows, self.cols, words)
+        board = Board(session, self.dim, self.words)
         self.boards[session] = board
 
         return board
  
 
-    def claim(session, word):
+    def claim(self, session, word):
 
         """ Claims a word for a session.
         """
         board = self.boards[session]
         if not board:
             # invalid session
-            return false
+            return False
         if not board.claim(word):
             # word not found on board
-            return false
+            return False
 
-        return true
+        return True
         
-    def win(session):
+    def win(self, session):
         """ Checks if a session is a winner.
         """
         board = self.boards[session]
         if not board:
             # no such session
-            return false
+            return False
         return board.winner()
 
