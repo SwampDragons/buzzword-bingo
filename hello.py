@@ -6,6 +6,11 @@ app = Flask(__name__)
 thisgame = Game()
 
 
+@app.route("/", methods=['GET'])
+def hello_world():
+    return "It's working!"
+
+
 @app.route("/checkbingo/<username>", methods=['POST'])
 def checkbingo(username):
     clicked_json = request.form.getlist('list')
