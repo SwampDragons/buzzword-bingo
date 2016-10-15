@@ -8,7 +8,7 @@ thisgame = Game()
 
 @app.route("/", methods=['GET'])
 def hello_world():
-    return "It's working and it automatically updates!"
+    return "It's working and it automatically updates! ...one more check."
 
 
 @app.route("/checkbingo/<username>", methods=['POST'])
